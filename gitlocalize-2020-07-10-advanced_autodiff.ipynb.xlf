@@ -1,0 +1,839 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2">
+  <file original="de/advanced_autodiff.ipynb" source-language="en" target-language="de">
+   <body>
+    <trans-unit id="5236367">
+      <source xml:lang="en">Copyright 2020 The TensorFlow Authors.</source>
+      <target xml:lang="de">Copyright 2020 Die TensorFlow-Autoren.</target>
+    </trans-unit>
+    <trans-unit id="5236372">
+      <source xml:lang="en">#@title Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.</source>
+      <target xml:lang="de">#@title Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.</target>
+    </trans-unit>
+    <trans-unit id="5236355">
+      <source xml:lang="en">Advanced Automatic Differentiation</source>
+      <target xml:lang="de">Erweiterte automatische Differenzierung</target>
+    </trans-unit>
+    <trans-unit id="5236342">
+      <source xml:lang="en"><a target="_blank" href="https://www.tensorflow.org/guide/advanced_autodiff"><img src="https://www.tensorflow.org/images/tf_logo_32px.png"/>View on TensorFlow.org</a></source>
+      <target xml:lang="de"><a target="_blank" href="https://www.tensorflow.org/guide/advanced_autodiff"><img src="https://www.tensorflow.org/images/tf_logo_32px.png"/> Ansicht auf TensorFlow.org</a></target>
+    </trans-unit>
+    <trans-unit id="5236343">
+      <source xml:lang="en"><a target="_blank" href="https://colab.research.google.com/github/tensorflow/docs/blob/master/site/en/guide/advanced_autodiff.ipynb"><img src="https://www.tensorflow.org/images/colab_logo_32px.png"/>Run in Google Colab</a></source>
+      <target xml:lang="de"><a target="_blank" href="https://colab.research.google.com/github/tensorflow/docs/blob/master/site/en/guide/advanced_autodiff.ipynb"><img src="https://www.tensorflow.org/images/colab_logo_32px.png"/> In Google Colab ausführen</a></target>
+    </trans-unit>
+    <trans-unit id="5236344">
+      <source xml:lang="en"><a target="_blank" href="https://github.com/tensorflow/docs/blob/master/site/en/guide/advanced_autodiff.ipynb"><img src="https://www.tensorflow.org/images/GitHub-Mark-32px.png"/>View source on GitHub</a></source>
+      <target xml:lang="de"><a target="_blank" href="https://github.com/tensorflow/docs/blob/master/site/en/guide/advanced_autodiff.ipynb"><img src="https://www.tensorflow.org/images/GitHub-Mark-32px.png"/> Quelle auf GitHub anzeigen</a></target>
+    </trans-unit>
+    <trans-unit id="5236345">
+      <source xml:lang="en"><a href="https://storage.googleapis.com/tensorflow_docs/docs/site/en/guide/advanced_autodiff.ipynb"><img src="https://www.tensorflow.org/images/download_logo_32px.png"/>Download notebook</a></source>
+      <target xml:lang="de"><a href="https://storage.googleapis.com/tensorflow_docs/docs/site/en/guide/advanced_autodiff.ipynb"><img src="https://www.tensorflow.org/images/download_logo_32px.png"/> Notizbuch herunterladen</a></target>
+    </trans-unit>
+    <trans-unit id="5236356">
+      <source xml:lang="en">The <a href="autodiff.ipynb" data-md-type="link">automatic differentiation guide</a> includes everything required to calculate gradients. This guide focuses on deeper, less common features of the <code data-md-type="codespan">tf.GradientTape</code> api.</source>
+      <target xml:lang="de">Die <a href="autodiff.ipynb" data-md-type="link">automatische Differenzierungsanleitung</a> enthält alles, was zur Berechnung von Verläufen erforderlich ist. Dieser Leitfaden konzentriert sich auf tiefere, weniger verbreitete Funktionen der <code data-md-type="codespan">tf.GradientTape</code> API.</target>
+    </trans-unit>
+    <trans-unit id="5236349">
+      <source xml:lang="en">Setup</source>
+      <target xml:lang="de">Konfiguration</target>
+    </trans-unit>
+    <trans-unit id="5236323">
+      <source xml:lang="en">import tensorflow as tf
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+mpl.rcParams['figure.figsize'] = (8, 6)</source>
+      <target xml:lang="de">import tensorflow as tf
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+mpl.rcParams['figure.figsize'] = (8, 6)</target>
+    </trans-unit>
+    <trans-unit id="5236373">
+      <source xml:lang="en">Controlling gradient recording</source>
+      <target xml:lang="de">Steuerung der Gradientenaufzeichnung</target>
+    </trans-unit>
+    <trans-unit id="5236374">
+      <source xml:lang="en">In the <a href="autodiff.ipynb" data-md-type="link">automatic differentiation guide</a> you saw how to control which variables and tensors are watched by the tape while building the gradient calculation.</source>
+      <target xml:lang="de">In der <a href="autodiff.ipynb" data-md-type="link">automatischen Differenzierungsanleitung haben</a> Sie gesehen, wie Sie steuern können, welche Variablen und Tensoren vom Band überwacht werden, während Sie die Gradientenberechnung erstellen.</target>
+    </trans-unit>
+    <trans-unit id="5236375">
+      <source xml:lang="en">The tape also has methods to manipulate the recording.</source>
+      <target xml:lang="de">Das Band verfügt auch über Methoden zum Manipulieren der Aufnahme.</target>
+    </trans-unit>
+    <trans-unit id="5236319">
+      <source xml:lang="en">If you wish to stop recording gradients, you can use <code data-md-type="codespan">GradientTape.stop_recording()</code> to temporarily suspend recording.</source>
+      <target xml:lang="de">Wenn Sie die Aufzeichnung von Verläufen beenden möchten, können Sie <code data-md-type="codespan">GradientTape.stop_recording()</code> um die Aufnahme vorübergehend auszusetzen.</target>
+    </trans-unit>
+    <trans-unit id="5236320">
+      <source xml:lang="en">This may be useful to reduce overhead if you do not wish to differentiate a complicated operation in the middle of your model.  This could include calculating a metric or an intermediate result:</source>
+      <target xml:lang="de">Dies kann nützlich sein, um den Overhead zu reduzieren, wenn Sie eine komplizierte Operation in der Mitte Ihres Modells nicht unterscheiden möchten. Dies kann die Berechnung einer Metrik oder eines Zwischenergebnisses umfassen:</target>
+    </trans-unit>
+    <trans-unit id="5236346">
+      <source xml:lang="en">x = tf.Variable(2.0)
+y = tf.Variable(3.0)
+
+with tf.GradientTape() as t:
+  x_sq = x * x
+  with t.stop_recording():
+    y_sq = y * y
+  z = x_sq + y_sq
+
+grad = t.gradient(z, {'x': x, 'y': y})
+
+print('dz/dx:', grad['x'])  # 2*x => 4
+print('dz/dy:', grad['y'])</source>
+      <target xml:lang="de">x = tf.Variable(2.0)
+y = tf.Variable(3.0)
+
+with tf.GradientTape() as t:
+  x_sq = x * x
+  with t.stop_recording():
+    y_sq = y * y
+  z = x_sq + y_sq
+
+grad = t.gradient(z, {'x': x, 'y': y})
+
+print('dz/dx:', grad['x'])  # 2*x => 4
+print('dz/dy:', grad['y'])</target>
+    </trans-unit>
+    <trans-unit id="5236305">
+      <source xml:lang="en">If you wish to start over entirely, use <code data-md-type="codespan">reset()</code>.  Simply exiting the gradient tape block and restarting is usually easier to read, but you can use <code data-md-type="codespan">reset</code> when exiting the tape block is difficult or impossible.</source>
+      <target xml:lang="de">Wenn Sie ganz von vorne beginnen möchten, verwenden Sie <code data-md-type="codespan">reset()</code> . Das einfache Verlassen des Verlaufsbandblocks und das Neustarten ist normalerweise einfacher zu lesen. Sie können jedoch das <code data-md-type="codespan">reset</code> wenn das Verlassen des Bandblocks schwierig oder unmöglich ist.</target>
+    </trans-unit>
+    <trans-unit id="5236333">
+      <source xml:lang="en">x = tf.Variable(2.0)
+y = tf.Variable(3.0)
+reset = True
+
+with tf.GradientTape() as t:
+  y_sq = y * y
+  if reset:
+    # Throw out all the tape recorded so far
+    t.reset()
+  z = x * x + y_sq
+
+grad = t.gradient(z, {'x': x, 'y': y})
+
+print('dz/dx:', grad['x'])  # 2*x => 4
+print('dz/dy:', grad['y'])</source>
+      <target xml:lang="de">x = tf.Variable(2.0)
+y = tf.Variable(3.0)
+reset = True
+
+with tf.GradientTape() as t:
+  y_sq = y * y
+  if reset:
+    # Throw out all the tape recorded so far
+    t.reset()
+  z = x * x + y_sq
+
+grad = t.gradient(z, {'x': x, 'y': y})
+
+print('dz/dx:', grad['x'])  # 2*x => 4
+print('dz/dy:', grad['y'])</target>
+    </trans-unit>
+    <trans-unit id="5236295">
+      <source xml:lang="en">Stop gradient</source>
+      <target xml:lang="de">Steigung stoppen</target>
+    </trans-unit>
+    <trans-unit id="5236383">
+      <source xml:lang="en">In contrast to the global tape controls above, the <code data-md-type="codespan">tf.stop_gradient</code> function is much more precise. It can be used to stop gradients from flowing along a particular path, without needing access to the tape itself:</source>
+      <target xml:lang="de">In contrast to the global tape controls above, the <code data-md-type="codespan">tf.stop_gradient</code> function is much more precise. It can be used to stop gradients from flowing along a particular path, without needing access to the tape itself:</target>
+    </trans-unit>
+    <trans-unit id="5236286">
+      <source xml:lang="en">x = tf.Variable(2.0)
+y = tf.Variable(3.0)
+
+with tf.GradientTape() as t:
+  y_sq = y**2
+  z = x**2 + tf.stop_gradient(y_sq)
+
+grad = t.gradient(z, {'x': x, 'y': y})
+
+print('dz/dx:', grad['x'])  # 2*x => 4
+print('dz/dy:', grad['y'])</source>
+      <target xml:lang="de">x = tf.Variable(2.0)
+y = tf.Variable(3.0)
+
+with tf.GradientTape() as t:
+  y_sq = y**2
+  z = x**2 + tf.stop_gradient(y_sq)
+
+grad = t.gradient(z, {'x': x, 'y': y})
+
+print('dz/dx:', grad['x'])  # 2*x => 4
+print('dz/dy:', grad['y'])</target>
+    </trans-unit>
+    <trans-unit id="5236335">
+      <source xml:lang="en">Custom gradients</source>
+      <target xml:lang="de">Benutzerdefinierte Farbverläufe</target>
+    </trans-unit>
+    <trans-unit id="5236336">
+      <source xml:lang="en">In some cases, you may want to control exactly how gradients are calculated rather than using the default.  These situations include:</source>
+      <target xml:lang="de">In einigen Fällen möchten Sie möglicherweise genau steuern, wie Verläufe berechnet werden, anstatt die Standardeinstellung zu verwenden. Diese Situationen umfassen:</target>
+    </trans-unit>
+    <trans-unit id="5236384">
+      <source xml:lang="en">For writing a new op, you can use <code data-md-type="codespan">tf.RegisterGradient</code> to set up your own. See that page for details. (Note that the gradient registry is global, so change it with caution.)</source>
+      <target xml:lang="de">For writing a new op, you can use <code data-md-type="codespan">tf.RegisterGradient</code> to set up your own. See that page for details. (Note that the gradient registry is global, so change it with caution.)</target>
+    </trans-unit>
+    <trans-unit id="5236337">
+      <source xml:lang="en">For the latter three cases, you can use <code data-md-type="codespan">tf.custom_gradient</code>.</source>
+      <target xml:lang="de">In den letzten drei Fällen können Sie <code data-md-type="codespan">tf.custom_gradient</code> .</target>
+    </trans-unit>
+    <trans-unit id="5236338">
+      <source xml:lang="en">There is no defined gradient for a new op you are writing.</source>
+      <target xml:lang="de">Es gibt keinen definierten Farbverlauf für eine neue Operation, die Sie schreiben.</target>
+    </trans-unit>
+    <trans-unit id="5236339">
+      <source xml:lang="en">The default calculations are numerically unstable.</source>
+      <target xml:lang="de">Die Standardberechnungen sind numerisch instabil.</target>
+    </trans-unit>
+    <trans-unit id="5236340">
+      <source xml:lang="en">You wish to cache an expensive computation from the forward pass.</source>
+      <target xml:lang="de">Sie möchten eine teure Berechnung aus dem Vorwärtsdurchlauf zwischenspeichern.</target>
+    </trans-unit>
+    <trans-unit id="5236341">
+      <source xml:lang="en">You want to modify  a value (for example using: <code data-md-type="codespan">tf.clip_by_value</code>, <code data-md-type="codespan">tf.math.round</code>) without modifying the gradient.</source>
+      <target xml:lang="de">Sie möchten einen Wert ändern (z. B. mit: <code data-md-type="codespan">tf.clip_by_value</code> , <code data-md-type="codespan">tf.math.round</code> ), ohne den Verlauf zu ändern.</target>
+    </trans-unit>
+    <trans-unit id="5236390">
+      <source xml:lang="en">Here is an example that applies <code data-md-type="codespan">tf.clip_by_norm</code> to the intermediate gradient.</source>
+      <target xml:lang="de">Here is an example that applies <code data-md-type="codespan">tf.clip_by_norm</code> to the intermediate gradient.</target>
+    </trans-unit>
+    <trans-unit id="5236347">
+      <source xml:lang="en"># Establish an identity operation, but clip during the gradient pass
+@tf.custom_gradient
+def clip_gradients(y):
+  def backward(dy):
+    return tf.clip_by_norm(dy, 0.5)
+  return y, backward
+
+v = tf.Variable(2.0)
+with tf.GradientTape() as t:
+  output = clip_gradients(v * v)
+print(t.gradient(output, v))  # calls "backward", which clips 4 to 2
+</source>
+      <target xml:lang="de"># Establish an identity operation, but clip during the gradient pass
+@tf.custom_gradient
+def clip_gradients(y):
+  def backward(dy):
+    return tf.clip_by_norm(dy, 0.5)
+  return y, backward
+
+v = tf.Variable(2.0)
+with tf.GradientTape() as t:
+  output = clip_gradients(v * v)
+print(t.gradient(output, v))  # calls "backward", which clips 4 to 2
+</target>
+    </trans-unit>
+    <trans-unit id="5236385">
+      <source xml:lang="en">See the <code data-md-type="codespan">tf.custom_gradient</code> decorator for more details.</source>
+      <target xml:lang="de">See the <code data-md-type="codespan">tf.custom_gradient</code> decorator for more details.</target>
+    </trans-unit>
+    <trans-unit id="5236296">
+      <source xml:lang="en">Multiple tapes</source>
+      <target xml:lang="de">Mehrere Bänder</target>
+    </trans-unit>
+    <trans-unit id="5236297">
+      <source xml:lang="en">Multiple tapes interact seamlessly. For example, here each tape watches a different set of tensors:</source>
+      <target xml:lang="de">Mehrere Bänder interagieren nahtlos. Zum Beispiel beobachtet hier jedes Band einen anderen Satz von Tensoren:</target>
+    </trans-unit>
+    <trans-unit id="5236302">
+      <source xml:lang="en">x0 = tf.constant(0.0)
+x1 = tf.constant(0.0)
+
+with tf.GradientTape() as tape0, tf.GradientTape() as tape1:
+  tape0.watch(x0)
+  tape1.watch(x1)
+
+  y0 = tf.math.sin(x0)
+  y1 = tf.nn.sigmoid(x1)
+
+  y = y0 + y1
+
+  ys = tf.reduce_sum(y)</source>
+      <target xml:lang="de">x0 = tf.constant(0.0)
+x1 = tf.constant(0.0)
+
+with tf.GradientTape() as tape0, tf.GradientTape() as tape1:
+  tape0.watch(x0)
+  tape1.watch(x1)
+
+  y0 = tf.math.sin(x0)
+  y1 = tf.nn.sigmoid(x1)
+
+  y = y0 + y1
+
+  ys = tf.reduce_sum(y)</target>
+    </trans-unit>
+    <trans-unit id="5236293">
+      <source xml:lang="en">tape0.gradient(ys, x0).numpy()   # cos(x) => 1.0</source>
+      <target xml:lang="de">tape0.gradient(ys, x0).numpy()   # cos(x) => 1.0</target>
+    </trans-unit>
+    <trans-unit id="5236357">
+      <source xml:lang="en">tape1.gradient(ys, x1).numpy()   # sigmoid(x1)*(1-sigmoid(x1)) => 0.25</source>
+      <target xml:lang="de">tape1.gradient(ys, x1).numpy()   # sigmoid(x1)*(1-sigmoid(x1)) => 0.25</target>
+    </trans-unit>
+    <trans-unit id="5236307">
+      <source xml:lang="en">Higher-order gradients</source>
+      <target xml:lang="de">Gradienten höherer Ordnung</target>
+    </trans-unit>
+    <trans-unit id="5236308">
+      <source xml:lang="en">Operations inside of the <code data-md-type="codespan">GradientTape</code> context manager are recorded for automatic differentiation. If gradients are computed in that context, then the gradient computation is recorded as well. As a result, the exact same API works for higher-order gradients as well. For example:</source>
+      <target xml:lang="de">Vorgänge im <code data-md-type="codespan">GradientTape</code> Kontextmanager werden zur automatischen Differenzierung aufgezeichnet. Wenn in diesem Zusammenhang Gradienten berechnet werden, wird auch die Gradientenberechnung aufgezeichnet. Infolgedessen funktioniert genau dieselbe API auch für Gradienten höherer Ordnung. Beispielsweise:</target>
+    </trans-unit>
+    <trans-unit id="5236304">
+      <source xml:lang="en">x = tf.Variable(1.0)  # Create a Tensorflow variable initialized to 1.0
+
+with tf.GradientTape() as t2:
+  with tf.GradientTape() as t1:
+    y = x * x * x
+
+  # Compute the gradient inside the outer `t2` context manager
+  # which means the gradient computation is differentiable as well.
+  dy_dx = t1.gradient(y, x)
+d2y_dx2 = t2.gradient(dy_dx, x)
+
+print('dy_dx:', dy_dx.numpy())  # 3 * x**2 => 3.0
+print('d2y_dx2:', d2y_dx2.numpy())  # 6 * x => 6.0</source>
+      <target xml:lang="de">x = tf.Variable(1.0)  # Create a Tensorflow variable initialized to 1.0
+
+with tf.GradientTape() as t2:
+  with tf.GradientTape() as t1:
+    y = x * x * x
+
+  # Compute the gradient inside the outer `t2` context manager
+  # which means the gradient computation is differentiable as well.
+  dy_dx = t1.gradient(y, x)
+d2y_dx2 = t2.gradient(dy_dx, x)
+
+print('dy_dx:', dy_dx.numpy())  # 3 * x**2 => 3.0
+print('d2y_dx2:', d2y_dx2.numpy())  # 6 * x => 6.0</target>
+    </trans-unit>
+    <trans-unit id="5236325">
+      <source xml:lang="en">While that does give you the second derivative of a <em data-md-type="emphasis">scalar</em> function, this pattern does not generalize to produce a Hessian matrix, since <code data-md-type="codespan">GradientTape.gradient</code> only computes the gradient of a scalar. To construct a Hessian, see the <a href="#hessian" data-md-type="link">Hessian example</a> under the <a href="#jacobians" data-md-type="link">Jacobian section</a>.</source>
+      <target xml:lang="de">Während dies die zweite Ableitung einer <em data-md-type="emphasis">Skalarfunktion</em> ergibt, wird dieses Muster nicht verallgemeinert, um eine hessische Matrix zu erzeugen, da <code data-md-type="codespan">GradientTape.gradient</code> nur den Gradienten eines Skalars berechnet. Informationen zum Konstruieren eines Hessischen finden Sie im <a href="#hessian" data-md-type="link">hessischen Beispiel</a> im <a href="#jacobians" data-md-type="link">Abschnitt Jacobian</a> .</target>
+    </trans-unit>
+    <trans-unit id="5236326">
+      <source xml:lang="en">"Nested calls to <code data-md-type="codespan">GradientTape.gradient</code>" is a good pattern when you are calculating a scalar from a gradient, and then the resulting scalar acts as a source for a second gradient calculation, as in the following example.</source>
+      <target xml:lang="de">"Verschachtelte Aufrufe von <code data-md-type="codespan">GradientTape.gradient</code> " ist ein gutes Muster, wenn Sie einen Skalar aus einem Gradienten berechnen. Der resultierende Skalar fungiert dann als Quelle für eine zweite Gradientenberechnung, wie im folgenden Beispiel.</target>
+    </trans-unit>
+    <trans-unit id="5236360">
+      <source xml:lang="en">Example: Input gradient regularization</source>
+      <target xml:lang="de">Beispiel: Regularisierung des Eingabegradienten</target>
+    </trans-unit>
+    <trans-unit id="5236364">
+      <source xml:lang="en">Many models are susceptible to "adversarial examples". This collection of techniques modifies the model's input to confuse the model's output. The <a href="https://www.tensorflow.org/tutorials/generative/adversarial_fgsm" data-md-type="link">simplest implementation</a> takes a single step along the gradient of the output with respect to the input; the "input gradient".</source>
+      <target xml:lang="de">Viele Modelle sind anfällig für "kontroverse Beispiele". Diese Sammlung von Techniken ändert die Eingabe des Modells, um die Ausgabe des Modells zu verwirren. Die <a href="https://www.tensorflow.org/tutorials/generative/adversarial_fgsm" data-md-type="link">einfachste Implementierung</a> erfolgt in einem einzigen Schritt entlang des Gradienten der Ausgabe in Bezug auf die Eingabe. der "Eingangsgradient".</target>
+    </trans-unit>
+    <trans-unit id="5236365">
+      <source xml:lang="en">One technique to increase robustness to adversarial examples is <a href="https://arxiv.org/abs/1905.11468" data-md-type="link">input gradient regularization</a>, which attempts to minimize the magnitude of the input gradient. If the input gradient is small, then the change in the output should be small too.</source>
+      <target xml:lang="de">Eine Technik zur Erhöhung der Robustheit gegenüber gegnerischen Beispielen ist die <a href="https://arxiv.org/abs/1905.11468" data-md-type="link">Regularisierung</a> des Eingabegradienten, mit der versucht wird, die Größe des Eingabegradienten zu minimieren. Wenn der Eingangsgradient klein ist, sollte auch die Änderung des Ausgangs gering sein.</target>
+    </trans-unit>
+    <trans-unit id="5236366">
+      <source xml:lang="en">Below is a naive implementation of input gradient regularization. The implementation is:</source>
+      <target xml:lang="de">Im Folgenden finden Sie eine naive Implementierung der Regularisierung des Eingabegradienten. Die Implementierung ist:</target>
+    </trans-unit>
+    <trans-unit id="5236361">
+      <source xml:lang="en">Calculate the gradient of the output with respect to the input using an inner tape.</source>
+      <target xml:lang="de">Berechnen Sie den Gradienten der Ausgabe in Bezug auf die Eingabe mit einem inneren Band.</target>
+    </trans-unit>
+    <trans-unit id="5236362">
+      <source xml:lang="en">Calculate the magnitude of that input gradient.</source>
+      <target xml:lang="de">Berechnen Sie die Größe dieses Eingangsgradienten.</target>
+    </trans-unit>
+    <trans-unit id="5236363">
+      <source xml:lang="en">Calculate the gradient of that magnitude with respect to the model.</source>
+      <target xml:lang="de">Berechnen Sie den Gradienten dieser Größe in Bezug auf das Modell.</target>
+    </trans-unit>
+    <trans-unit id="5236368">
+      <source xml:lang="en">x = tf.random.normal([7, 5])
+
+layer = tf.keras.layers.Dense(10, activation=tf.nn.relu)</source>
+      <target xml:lang="de">x = tf.random.normal([7, 5])
+
+layer = tf.keras.layers.Dense(10, activation=tf.nn.relu)</target>
+    </trans-unit>
+    <trans-unit id="5236311">
+      <source xml:lang="en">with tf.GradientTape() as t2:
+  # The inner tape only takes the gradient with respect to the input,
+  # not the variables.
+  with tf.GradientTape(watch_accessed_variables=False) as t1:
+    t1.watch(x)
+    y = layer(x)
+    out = tf.reduce_sum(layer(x)**2)
+  # 1. Calculate the input gradient.
+  g1 = t1.gradient(out, x)
+  # 2. Calculate the magnitude of the input gradient.
+  g1_mag = tf.norm(g1)
+
+# 3. Calculate the gradient of the magnitude with respect to the model.
+dg1_mag = t2.gradient(g1_mag, layer.trainable_variables)</source>
+      <target xml:lang="de">with tf.GradientTape() as t2:
+  # The inner tape only takes the gradient with respect to the input,
+  # not the variables.
+  with tf.GradientTape(watch_accessed_variables=False) as t1:
+    t1.watch(x)
+    y = layer(x)
+    out = tf.reduce_sum(layer(x)**2)
+  # 1. Calculate the input gradient.
+  g1 = t1.gradient(out, x)
+  # 2. Calculate the magnitude of the input gradient.
+  g1_mag = tf.norm(g1)
+
+# 3. Calculate the gradient of the magnitude with respect to the model.
+dg1_mag = t2.gradient(g1_mag, layer.trainable_variables)</target>
+    </trans-unit>
+    <trans-unit id="5236282">
+      <source xml:lang="en">[var.shape for var in dg1_mag]</source>
+      <target xml:lang="de">[var.shape for var in dg1_mag]</target>
+    </trans-unit>
+    <trans-unit id="5236310">
+      <source xml:lang="en">Jacobians</source>
+      <target xml:lang="de">Jacobianer</target>
+    </trans-unit>
+    <trans-unit id="5236289">
+      <source xml:lang="en">All the previous examples took the gradients of a scalar target with respect to some source tensor(s).</source>
+      <target xml:lang="de">In allen vorherigen Beispielen wurden die Gradienten eines skalaren Ziels in Bezug auf einen oder mehrere Quellentensoren verwendet.</target>
+    </trans-unit>
+    <trans-unit id="5236290">
+      <source xml:lang="en">The <a href="https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant" data-md-type="link">Jacobian matrix</a> represents the gradients of a vector valued function. Each row contains the gradient of one of the vector's elements.</source>
+      <target xml:lang="de">Die <a href="https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant" data-md-type="link">Jacobi-Matrix</a> repräsentiert die Gradienten einer Vektorwertfunktion. Jede Zeile enthält den Gradienten eines der Elemente des Vektors.</target>
+    </trans-unit>
+    <trans-unit id="5236291">
+      <source xml:lang="en">The <code data-md-type="codespan">GradientTape.jacobian</code> method allows you to efficiently calculate a Jacobian matrix.</source>
+      <target xml:lang="de">Mit der <code data-md-type="codespan">GradientTape.jacobian</code> Methode können Sie eine Jacobian-Matrix effizient berechnen.</target>
+    </trans-unit>
+    <trans-unit id="5236329">
+      <source xml:lang="en">Note that:</source>
+      <target xml:lang="de">Beachten Sie, dass:</target>
+    </trans-unit>
+    <trans-unit id="5236330">
+      <source xml:lang="en">Like <code data-md-type="codespan">gradient</code>: The <code data-md-type="codespan">sources</code> argument can be a tensor or a container of tensors.</source>
+      <target xml:lang="de">Wie <code data-md-type="codespan">gradient</code> : Das <code data-md-type="codespan">sources</code> kann ein Tensor oder ein Container mit Tensoren sein.</target>
+    </trans-unit>
+    <trans-unit id="5236331">
+      <source xml:lang="en">Unlike <code data-md-type="codespan">gradient</code>: The <code data-md-type="codespan">target</code> tensor must be a single tensor.</source>
+      <target xml:lang="de">Im Gegensatz zu <code data-md-type="codespan">gradient</code> : Der <code data-md-type="codespan">target</code> Tensor ein einzelner Tensor sein muss.</target>
+    </trans-unit>
+    <trans-unit id="5236352">
+      <source xml:lang="en">Scalar source</source>
+      <target xml:lang="de">Skalare Quelle</target>
+    </trans-unit>
+    <trans-unit id="5236299">
+      <source xml:lang="en">As a first example, here is the Jacobian of a vector-target with respect to a scalar-source.</source>
+      <target xml:lang="de">Als erstes Beispiel ist hier der Jacobi eines Vektorziels in Bezug auf eine Skalarquelle.</target>
+    </trans-unit>
+    <trans-unit id="5236300">
+      <source xml:lang="en">x = tf.linspace(-10.0, 10.0, 200+1)
+delta = tf.Variable(0.0)
+
+with tf.GradientTape() as tape:
+  y = tf.nn.sigmoid(x+delta)
+
+dy_dx = tape.jacobian(y, delta)</source>
+      <target xml:lang="de">x = tf.linspace(-10.0, 10.0, 200+1)
+delta = tf.Variable(0.0)
+
+with tf.GradientTape() as tape:
+  y = tf.nn.sigmoid(x+delta)
+
+dy_dx = tape.jacobian(y, delta)</target>
+    </trans-unit>
+    <trans-unit id="5236301">
+      <source xml:lang="en">When you take the Jacobian with respect to a scalar the result has the shape of the <strong data-md-type="double_emphasis">target</strong>, and gives the gradient of the each element with respect to the source:</source>
+      <target xml:lang="de">Wenn Sie den Jacobi in Bezug auf einen Skalar nehmen, hat das Ergebnis die Form des <strong data-md-type="double_emphasis">Ziels</strong> und gibt den Gradienten jedes Elements in Bezug auf die Quelle an:</target>
+    </trans-unit>
+    <trans-unit id="5236324">
+      <source xml:lang="en">print(y.shape)
+print(dy_dx.shape)</source>
+      <target xml:lang="de">print(y.shape)
+print(dy_dx.shape)</target>
+    </trans-unit>
+    <trans-unit id="5236358">
+      <source xml:lang="en">plt.plot(x.numpy(), y, label='y')
+plt.plot(x.numpy(), dy_dx, label='dy/dx')
+plt.legend()
+_ = plt.xlabel('x')</source>
+      <target xml:lang="de">plt.plot(x.numpy(), y, label='y')
+plt.plot(x.numpy(), dy_dx, label='dy/dx')
+plt.legend()
+_ = plt.xlabel('x')</target>
+    </trans-unit>
+    <trans-unit id="5236309">
+      <source xml:lang="en">Tensor source</source>
+      <target xml:lang="de">Tensorquelle</target>
+    </trans-unit>
+    <trans-unit id="5236316">
+      <source xml:lang="en">Whether the input is scalar or tensor, <code data-md-type="codespan">GradientTape.jacobian</code> efficiently calculates the gradient of each element of the source with respect to each element of the target(s).</source>
+      <target xml:lang="de">Unabhängig davon, ob die Eingabe skalar oder tensorisch ist, berechnet <code data-md-type="codespan">GradientTape.jacobian</code> effizient den Gradienten jedes Elements der Quelle in Bezug auf jedes Element des Ziels (der Ziele).</target>
+    </trans-unit>
+    <trans-unit id="5236317">
+      <source xml:lang="en">For example, the output of this layer has a shape of <code data-md-type="codespan">(10, 7)</code>:</source>
+      <target xml:lang="de">Zum Beispiel hat die Ausgabe dieser Ebene eine Form von <code data-md-type="codespan">(10, 7)</code> :</target>
+    </trans-unit>
+    <trans-unit id="5236287">
+      <source xml:lang="en">x = tf.random.normal([7, 5])
+layer = tf.keras.layers.Dense(10, activation=tf.nn.relu)
+
+with tf.GradientTape(persistent=True) as tape:
+  y = layer(x)
+
+y.shape</source>
+      <target xml:lang="de">x = tf.random.normal([7, 5])
+layer = tf.keras.layers.Dense(10, activation=tf.nn.relu)
+
+with tf.GradientTape(persistent=True) as tape:
+  y = layer(x)
+
+y.shape</target>
+    </trans-unit>
+    <trans-unit id="5236371">
+      <source xml:lang="en">And the layer's kernel's shape is <code data-md-type="codespan">(5, 10)</code>:</source>
+      <target xml:lang="de">Und die Kernelform der Ebene ist <code data-md-type="codespan">(5, 10)</code> :</target>
+    </trans-unit>
+    <trans-unit id="5236303">
+      <source xml:lang="en">layer.kernel.shape</source>
+      <target xml:lang="de">layer.kernel.shape</target>
+    </trans-unit>
+    <trans-unit id="5236348">
+      <source xml:lang="en">The shape of the Jacobian of the output with respect to the kernel is those two shapes concatenated together:</source>
+      <target xml:lang="de">Die Form des Jacobi der Ausgabe in Bezug auf den Kernel sind die beiden miteinander verketteten Formen:</target>
+    </trans-unit>
+    <trans-unit id="5236354">
+      <source xml:lang="en">j = tape.jacobian(y, layer.kernel)
+j.shape</source>
+      <target xml:lang="de">j = tape.jacobian(y, layer.kernel)
+j.shape</target>
+    </trans-unit>
+    <trans-unit id="5236285">
+      <source xml:lang="en">If you sum over the target's dimensions, you're left with the gradient of the sum that would have been calculated by <code data-md-type="codespan">GradientTape.gradient</code>:</source>
+      <target xml:lang="de">Wenn Sie über die Dimensionen des Ziels summieren, bleibt der Gradient der Summe übrig, der von <code data-md-type="codespan">GradientTape.gradient</code> berechnet worden wäre:</target>
+    </trans-unit>
+    <trans-unit id="5236314">
+      <source xml:lang="en">g = tape.gradient(y, layer.kernel)
+print('g.shape:', g.shape)
+
+j_sum = tf.reduce_sum(j, axis=[0, 1])
+delta = tf.reduce_max(abs(g - j_sum)).numpy()
+assert delta < 1e-3
+print('delta:', delta)</source>
+      <target xml:lang="de">g = tape.gradient(y, layer.kernel)
+print('g.shape:', g.shape)
+
+j_sum = tf.reduce_sum(j, axis=[0, 1])
+delta = tf.reduce_max(abs(g - j_sum)).numpy()
+assert delta < 1e-3
+print('delta:', delta)</target>
+    </trans-unit>
+    <trans-unit id="5236380">
+      <source xml:lang="en">Example: Hessian</source>
+      <target xml:lang="de">Beispiel: Hessisch</target>
+    </trans-unit>
+    <trans-unit id="5236386">
+      <source xml:lang="en">While <code data-md-type="codespan">tf.GradientTape</code> doesn't give an explicit method for constructing a Hessian matrix it's possible to build one using the <code data-md-type="codespan">GradientTape.jacobian</code> method.</source>
+      <target xml:lang="de">While <code data-md-type="codespan">tf.GradientTape</code> doesn't give an explicit method for constructing a Hessian matrix it's possible to build one using the <code data-md-type="codespan">GradientTape.jacobian</code> method.</target>
+    </trans-unit>
+    <trans-unit id="5236351">
+      <source xml:lang="en">Note: The Hessian matrix contains <code data-md-type="codespan">N**2</code> parameters. For this and other reasons it is not practical for most models. This example is included more as a demonstration of how to use the <code data-md-type="codespan">GradientTape.jacobian</code> method, and is not an endorsement of direct Hessian-based optimization. A Hessian-vector product can be <a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/eager/benchmarks/resnet50/hvp_test.py" data-md-type="link">calculated efficiently with nested tapes</a>, and is a much more efficient approach to second-order optimization.</source>
+      <target xml:lang="de">Hinweis: Die hessische Matrix enthält <code data-md-type="codespan">N**2</code> Parameter. Aus diesem und anderen Gründen ist es für die meisten Modelle nicht praktikabel. Dieses Beispiel dient eher als Demonstration der Verwendung der <code data-md-type="codespan">GradientTape.jacobian</code> Methode und ist keine Bestätigung der direkten hessischen Optimierung. Ein Hessisches Vektorprodukt kann <a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/eager/benchmarks/resnet50/hvp_test.py" data-md-type="link">mit verschachtelten Bändern effizient berechnet werden</a> und ist ein viel effizienterer Ansatz zur Optimierung zweiter Ordnung.</target>
+    </trans-unit>
+    <trans-unit id="5236312">
+      <source xml:lang="en">x = tf.random.normal([7, 5])
+layer1 = tf.keras.layers.Dense(8, activation=tf.nn.relu)
+layer2 = tf.keras.layers.Dense(6, activation=tf.nn.relu)
+
+with tf.GradientTape() as t2:
+  with tf.GradientTape() as t1:
+    x = layer1(x)
+    x = layer2(x)
+    loss = tf.reduce_mean(x**2)
+
+  g = t1.gradient(loss, layer1.kernel)
+
+h = t2.jacobian(g, layer1.kernel)</source>
+      <target xml:lang="de">x = tf.random.normal([7, 5])
+layer1 = tf.keras.layers.Dense(8, activation=tf.nn.relu)
+layer2 = tf.keras.layers.Dense(6, activation=tf.nn.relu)
+
+with tf.GradientTape() as t2:
+  with tf.GradientTape() as t1:
+    x = layer1(x)
+    x = layer2(x)
+    loss = tf.reduce_mean(x**2)
+
+  g = t1.gradient(loss, layer1.kernel)
+
+h = t2.jacobian(g, layer1.kernel)</target>
+    </trans-unit>
+    <trans-unit id="5236315">
+      <source xml:lang="en">print(f'layer.kernel.shape: {layer1.kernel.shape}')
+print(f'h.shape: {h.shape}')</source>
+      <target xml:lang="de">print(f'layer.kernel.shape: {layer1.kernel.shape}')
+print(f'h.shape: {h.shape}')</target>
+    </trans-unit>
+    <trans-unit id="5236334">
+      <source xml:lang="en">To use this Hessian for a Newton's method step, you would first flatten out its axes into a matrix, and flatten out the gradient into a vector:</source>
+      <target xml:lang="de">Um dieses Hessische für einen Newtonschen Methodenschritt zu verwenden, würden Sie zuerst seine Achsen in eine Matrix reduzieren und den Gradienten in einen Vektor reduzieren:</target>
+    </trans-unit>
+    <trans-unit id="5236294">
+      <source xml:lang="en">n_params = tf.reduce_prod(layer1.kernel.shape)
+
+g_vec = tf.reshape(g, [n_params, 1])
+h_mat = tf.reshape(h, [n_params, n_params])</source>
+      <target xml:lang="de">n_params = tf.reduce_prod(layer1.kernel.shape)
+
+g_vec = tf.reshape(g, [n_params, 1])
+h_mat = tf.reshape(h, [n_params, n_params])</target>
+    </trans-unit>
+    <trans-unit id="5236332">
+      <source xml:lang="en">The Hessian matrix should be symmetric:</source>
+      <target xml:lang="de">Die hessische Matrix sollte symmetrisch sein:</target>
+    </trans-unit>
+    <trans-unit id="5236298">
+      <source xml:lang="en">def imshow_zero_center(image, **kwargs):
+  lim = tf.reduce_max(abs(image))
+  plt.imshow(image, vmin=-lim, vmax=lim, cmap='seismic', **kwargs)
+  plt.colorbar()</source>
+      <target xml:lang="de">def imshow_zero_center(image, **kwargs):
+  lim = tf.reduce_max(abs(image))
+  plt.imshow(image, vmin=-lim, vmax=lim, cmap='seismic', **kwargs)
+  plt.colorbar()</target>
+    </trans-unit>
+    <trans-unit id="5236306">
+      <source xml:lang="en">imshow_zero_center(h_mat)</source>
+      <target xml:lang="de">imshow_zero_center(h_mat)</target>
+    </trans-unit>
+    <trans-unit id="5236283">
+      <source xml:lang="en">The Newton's method update step is shown below.</source>
+      <target xml:lang="de">Der Schritt zur Aktualisierung der Newton-Methode ist unten dargestellt.</target>
+    </trans-unit>
+    <trans-unit id="5236288">
+      <source xml:lang="en">eps = 1e-3
+eye_eps = tf.eye(h_mat.shape[0])*eps</source>
+      <target xml:lang="de">eps = 1e-3
+eye_eps = tf.eye(h_mat.shape[0])*eps</target>
+    </trans-unit>
+    <trans-unit id="5236381">
+      <source xml:lang="en">Note: <a href="https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix/" data-md-type="link">Don't  actually invert the matrix</a>.</source>
+      <target xml:lang="de">Hinweis: <a href="https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix/" data-md-type="link">Invertieren Sie die Matrix nicht</a> .</target>
+    </trans-unit>
+    <trans-unit id="5236327">
+      <source xml:lang="en"># X(k+1) = X(k) - (∇²f(X(k)))^-1 @ ∇f(X(k))
+# h_mat = ∇²f(X(k))
+# g_vec = ∇f(X(k))
+update = tf.linalg.solve(h_mat + eye_eps, g_vec)
+
+# Reshape the update and apply it to the variable.
+_ = layer1.kernel.assign_sub(tf.reshape(update, layer1.kernel.shape))</source>
+      <target xml:lang="de"># X(k+1) = X(k) - (∇²f(X(k)))^-1 @ ∇f(X(k))
+# h_mat = ∇²f(X(k))
+# g_vec = ∇f(X(k))
+update = tf.linalg.solve(h_mat + eye_eps, g_vec)
+
+# Reshape the update and apply it to the variable.
+_ = layer1.kernel.assign_sub(tf.reshape(update, layer1.kernel.shape))</target>
+    </trans-unit>
+    <trans-unit id="5236387">
+      <source xml:lang="en">While this is relatively simple for a single <code data-md-type="codespan">tf.Variable</code>, applying this to a non-trivial model would require careful concatenation and slicing to produce a full Hessian across multiple variables.</source>
+      <target xml:lang="de">While this is relatively simple for a single <code data-md-type="codespan">tf.Variable</code>, applying this to a non-trivial model would require careful concatenation and slicing to produce a full Hessian across multiple variables.</target>
+    </trans-unit>
+    <trans-unit id="5236353">
+      <source xml:lang="en">Batch Jacobian</source>
+      <target xml:lang="de">Batch Jacobian</target>
+    </trans-unit>
+    <trans-unit id="5236321">
+      <source xml:lang="en">In some cases, you want to take the Jacobian of each of a stack of targets with respect to a stack of sources, where the Jacobians for each target-source pair are independent.</source>
+      <target xml:lang="de">In einigen Fällen möchten Sie den Jacobi jedes Zielstapels in Bezug auf einen Quellenstapel nehmen, wobei die Jacobi für jedes Ziel-Quell-Paar unabhängig sind.</target>
+    </trans-unit>
+    <trans-unit id="5236322">
+      <source xml:lang="en">For example, here the input <code data-md-type="codespan">x</code> is shaped <code data-md-type="codespan">(batch, ins)</code> and the output <code data-md-type="codespan">y</code> is shaped <code data-md-type="codespan">(batch, outs)</code>.</source>
+      <target xml:lang="de">Hier ist beispielsweise die Eingabe <code data-md-type="codespan">x</code> geformt <code data-md-type="codespan">(batch, ins)</code> und die Ausgabe <code data-md-type="codespan">y</code> geformt <code data-md-type="codespan">(batch, outs)</code> .</target>
+    </trans-unit>
+    <trans-unit id="5236370">
+      <source xml:lang="en">x = tf.random.normal([7, 5])
+
+layer1 = tf.keras.layers.Dense(8, activation=tf.nn.elu)
+layer2 = tf.keras.layers.Dense(6, activation=tf.nn.elu)
+
+with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
+  tape.watch(x)
+  y = layer1(x)
+  y = layer2(y)
+
+y.shape</source>
+      <target xml:lang="de">x = tf.random.normal([7, 5])
+
+layer1 = tf.keras.layers.Dense(8, activation=tf.nn.elu)
+layer2 = tf.keras.layers.Dense(6, activation=tf.nn.elu)
+
+with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
+  tape.watch(x)
+  y = layer1(x)
+  y = layer2(y)
+
+y.shape</target>
+    </trans-unit>
+    <trans-unit id="5236313">
+      <source xml:lang="en">The full Jacobian of <code data-md-type="codespan">y</code> with respect to <code data-md-type="codespan">x</code> has a shape of <code data-md-type="codespan">(batch, ins, batch, outs)</code>, even if you only want <code data-md-type="codespan">(batch, ins, outs)</code>.</source>
+      <target xml:lang="de">Der vollständige Jacobi von <code data-md-type="codespan">y</code> in Bezug auf <code data-md-type="codespan">x</code> hat die Form <code data-md-type="codespan">(batch, ins, batch, outs)</code> , auch wenn Sie nur möchten <code data-md-type="codespan">(batch, ins, outs)</code> .</target>
+    </trans-unit>
+    <trans-unit id="5236284">
+      <source xml:lang="en">j = tape.jacobian(y, x)
+j.shape</source>
+      <target xml:lang="de">j = tape.jacobian(y, x)
+j.shape</target>
+    </trans-unit>
+    <trans-unit id="5236376">
+      <source xml:lang="en">If the gradients of each item in the stack are independent, then every <code data-md-type="codespan">(batch, batch)</code> slice of this tensor is a diagonal matrix:</source>
+      <target xml:lang="de">Wenn die Verläufe jedes Elements im Stapel unabhängig sind, ist jede <code data-md-type="codespan">(batch, batch)</code> Schicht dieses Tensors eine diagonale Matrix:</target>
+    </trans-unit>
+    <trans-unit id="5236379">
+      <source xml:lang="en">imshow_zero_center(j[:, 0, :, 0])
+_ = plt.title('A (batch, batch) slice')</source>
+      <target xml:lang="de">imshow_zero_center(j[:, 0, :, 0])
+_ = plt.title('A (batch, batch) slice')</target>
+    </trans-unit>
+    <trans-unit id="5236318">
+      <source xml:lang="en">def plot_as_patches(j):
+  # Reorder axes so the diagonals will each form a contiguous patch.
+  j = tf.transpose(j, [1, 0, 3, 2])
+  # Pad in between each patch.
+  lim = tf.reduce_max(abs(j))
+  j = tf.pad(j, [[0, 0], [1, 1], [0, 0], [1, 1]],
+             constant_values=-lim)
+  # Reshape to form a single image.
+  s = j.shape
+  j = tf.reshape(j, [s[0]*s[1], s[2]*s[3]])
+  imshow_zero_center(j, extent=[-0.5, s[2]-0.5, s[0]-0.5, -0.5])
+
+plot_as_patches(j)
+_ = plt.title('All (batch, batch) slices are diagonal')</source>
+      <target xml:lang="de">def plot_as_patches(j):
+  # Reorder axes so the diagonals will each form a contiguous patch.
+  j = tf.transpose(j, [1, 0, 3, 2])
+  # Pad in between each patch.
+  lim = tf.reduce_max(abs(j))
+  j = tf.pad(j, [[0, 0], [1, 1], [0, 0], [1, 1]],
+             constant_values=-lim)
+  # Reshape to form a single image.
+  s = j.shape
+  j = tf.reshape(j, [s[0]*s[1], s[2]*s[3]])
+  imshow_zero_center(j, extent=[-0.5, s[2]-0.5, s[0]-0.5, -0.5])
+
+plot_as_patches(j)
+_ = plt.title('All (batch, batch) slices are diagonal')</target>
+    </trans-unit>
+    <trans-unit id="5236389">
+      <source xml:lang="en">To get the desired result you can sum over the duplicate <code data-md-type="codespan">batch</code> dimension, or else select the diagonals using <code data-md-type="codespan">tf.einsum</code>.</source>
+      <target xml:lang="de">To get the desired result you can sum over the duplicate <code data-md-type="codespan">batch</code> dimension, or else select the diagonals using <code data-md-type="codespan">tf.einsum</code>.</target>
+    </trans-unit>
+    <trans-unit id="5236377">
+      <source xml:lang="en">j_sum = tf.reduce_sum(j, axis=2)
+print(j_sum.shape)
+j_select = tf.einsum('bxby->bxy', j)
+print(j_select.shape)</source>
+      <target xml:lang="de">j_sum = tf.reduce_sum(j, axis=2)
+print(j_sum.shape)
+j_select = tf.einsum('bxby->bxy', j)
+print(j_select.shape)</target>
+    </trans-unit>
+    <trans-unit id="5236382">
+      <source xml:lang="en">It would be much more efficient to do the calculation without the extra dimension in the first place. The <code data-md-type="codespan">GradientTape.batch_jacobian</code> method does exactly that.</source>
+      <target xml:lang="de">Es wäre viel effizienter, die Berechnung zunächst ohne die zusätzliche Dimension durchzuführen. Die <code data-md-type="codespan">GradientTape.batch_jacobian</code> Methode macht genau das.</target>
+    </trans-unit>
+    <trans-unit id="5236378">
+      <source xml:lang="en">jb = tape.batch_jacobian(y, x)
+jb.shape</source>
+      <target xml:lang="de">jb = tape.batch_jacobian(y, x)
+jb.shape</target>
+    </trans-unit>
+    <trans-unit id="5236292">
+      <source xml:lang="en">error = tf.reduce_max(abs(jb - j_sum))
+assert error < 1e-3
+print(error.numpy())</source>
+      <target xml:lang="de">error = tf.reduce_max(abs(jb - j_sum))
+assert error < 1e-3
+print(error.numpy())</target>
+    </trans-unit>
+    <trans-unit id="5236388">
+      <source xml:lang="en">Caution: <code data-md-type="codespan">GradientTape.batch_jacobian</code> only verifies that the first dimension of the source and target match. It doesn't check that the gradients are actually independent. It's up to the user to ensure they only use <code data-md-type="codespan">batch_jacobian</code> where it makes sense. For example adding a <code data-md-type="codespan">layers.BatchNormalization</code> destroys the independence, since it normalizes across the <code data-md-type="codespan">batch</code> dimension:</source>
+      <target xml:lang="de">Caution: <code data-md-type="codespan">GradientTape.batch_jacobian</code> only verifies that the first dimension of the source and target match. It doesn't check that the gradients are actually independent. It's up to the user to ensure they only use <code data-md-type="codespan">batch_jacobian</code> where it makes sense. For example adding a <code data-md-type="codespan">layers.BatchNormalization</code> destroys the independence, since it normalizes across the <code data-md-type="codespan">batch</code> dimension:</target>
+    </trans-unit>
+    <trans-unit id="5236369">
+      <source xml:lang="en">x = tf.random.normal([7, 5])
+
+layer1 = tf.keras.layers.Dense(8, activation=tf.nn.elu)
+bn = tf.keras.layers.BatchNormalization()
+layer2 = tf.keras.layers.Dense(6, activation=tf.nn.elu)
+
+with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
+  tape.watch(x)
+  y = layer1(x)
+  y = bn(y, training=True)
+  y = layer2(y)
+
+j = tape.jacobian(y, x)
+print(f'j.shape: {j.shape}')</source>
+      <target xml:lang="de">x = tf.random.normal([7, 5])
+
+layer1 = tf.keras.layers.Dense(8, activation=tf.nn.elu)
+bn = tf.keras.layers.BatchNormalization()
+layer2 = tf.keras.layers.Dense(6, activation=tf.nn.elu)
+
+with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
+  tape.watch(x)
+  y = layer1(x)
+  y = bn(y, training=True)
+  y = layer2(y)
+
+j = tape.jacobian(y, x)
+print(f'j.shape: {j.shape}')</target>
+    </trans-unit>
+    <trans-unit id="5236359">
+      <source xml:lang="en">plot_as_patches(j)
+
+_ = plt.title('These slices are not diagonal')
+_ = plt.xlabel("Don't use `batch_jacobian`")</source>
+      <target xml:lang="de">plot_as_patches(j)
+
+_ = plt.title('These slices are not diagonal')
+_ = plt.xlabel("Don't use `batch_jacobian`")</target>
+    </trans-unit>
+    <trans-unit id="5236350">
+      <source xml:lang="en">In this case <code data-md-type="codespan">batch_jacobian</code> still runs and returns <em data-md-type="emphasis">something</em> with the expected shape, but it's contents have an unclear meaning.</source>
+      <target xml:lang="de">In diesem Fall wird <code data-md-type="codespan">batch_jacobian</code> immer noch ausgeführt und gibt <em data-md-type="emphasis">etwas</em> mit der erwarteten Form zurück, aber der Inhalt hat eine unklare Bedeutung.</target>
+    </trans-unit>
+    <trans-unit id="5236328">
+      <source xml:lang="en">jb = tape.batch_jacobian(y, x)
+print(f'jb.shape: {jb.shape}')</source>
+      <target xml:lang="de">jb = tape.batch_jacobian(y, x)
+print(f'jb.shape: {jb.shape}')</target>
+    </trans-unit>
+   </body>
+  </file>
+</xliff>
